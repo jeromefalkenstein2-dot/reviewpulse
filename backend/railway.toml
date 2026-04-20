@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Railway Deployment Configuration — ReviewPulse Backend
+# Docs: https://docs.railway.app/reference/config-as-code
+# ─────────────────────────────────────────────────────────────────────────────
+
+[build]
+# Use the Dockerfile for a reproducible, minimal production image.
+# Railway auto-detects Dockerfile in the root of the service directory.
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# The CMD in the Dockerfile already runs migrations + starts the server.
+# Migrations are idempotent — safe to run on every restart/deploy.
+startCommand = "dumb-init sh -c 'npx prisma migrate deploy && node src/index.js'"
+
+# Railway will send GET /health and expect 200 before marking deploy as live.
+healthcheckPath    = "/health"
+healthcheckTimeout = 60
+
+# Restart on failure with exponential backoff (up to 3 retries)
+restartPolicyType       = "on-failure"
+restartPolicyMaxRetries = 3
+
+# Keep one replica warm at all times (no cold starts on free tier)
+numReplicas = 1

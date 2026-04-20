@@ -1,0 +1,60 @@
+// ── PRODUCTION SCHEMA (PostgreSQL) ────────────────────────────────────────────
+// Used by Docker/Railway. Identical to schema.prisma except for the provider.
+// The Dockerfile copies this file over schema.prisma at build time.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id               String          @id @default(cuid())
+  shopDomain       String          @unique
+  accessToken      String
+  googleReviewUrl  String          @default("")
+  emailDelay       Int             @default(24)
+  emailSubject     String          @default("Wie war deine Bestellung? Hinterlasse uns eine Bewertung!")
+  emailFromName    String          @default("Das Shop-Team")
+  isActive         Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  reviewRequests   ReviewRequest[]
+  subscription     Subscription?
+}
+
+model ReviewRequest {
+  id            String    @id @default(cuid())
+  shopId        String
+  orderId       String
+  orderName     String    @default("")
+  customerEmail String
+  customerName  String
+  pendingAt     DateTime  @default(now())
+  sentAt        DateTime?
+  status        String    @default("pending") // pending / sent / clicked / bounced / unsubscribed
+  createdAt     DateTime  @default(now())
+
+  shop          Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, orderId])
+  @@index([shopId, status])
+  @@index([status, pendingAt])
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  shopId               String    @unique
+  stripeCustomerId     String    @unique
+  stripeSubscriptionId String?   @unique
+  status               String    @default("trialing") // trialing / active / past_due / canceled
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  shop                 Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+}
