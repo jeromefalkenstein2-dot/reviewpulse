@@ -72,6 +72,7 @@ app.use('/api', apiRoutes);
 app.use('/billing', billingRoutes);
 app.use('/track', trackRoutes);
 app.use('/unsubscribe', require('./routes/unsubscribe').router);
+app.get('/', (req, res) => { const { shop, host } = req.query; if (host) return res.redirect(process.env.FRONTEND_URL + '?shop=' + shop + '&host=' + host); if (shop) return res.redirect('/auth/begin?shop=' + shop); res.json({ status: 'ok' }); });
 
 app.get('/health', (req, res) => res.json({ status: 'ok', ts: new Date() }));
 
@@ -95,4 +96,3 @@ process.on('SIGTERM', async () => {
   await prisma.$disconnect();
   process.exit(0);
 });
-app.get('/', (req, res) => { const { shop, host } = req.query; if (host) { return res.redirect(process.env.FRONTEND_URL + '?shop=' + shop + '&host=' + host); } if (shop) { return res.redirect('/auth/begin?shop=' + shop); } res.json({ status: 'ok' }); });
