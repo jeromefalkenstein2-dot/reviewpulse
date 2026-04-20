@@ -10,7 +10,7 @@ import Settings from './pages/Settings';
 import Billing from './pages/Billing';
 
 function getAppBridgeConfig() {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search || window.top?.location?.search);
   return {
     apiKey: import.meta.env.VITE_SHOPIFY_API_KEY || '',
     host: params.get('host') || '',
