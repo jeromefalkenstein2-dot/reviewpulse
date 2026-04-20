@@ -6,7 +6,7 @@ generator client {
 // Uses SQLite — no PostgreSQL installation needed.
 // For production, Railway uses prisma/schema.prod.prisma (PostgreSQL).
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
