@@ -3,7 +3,5 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "dumb-init sh -c 'npx prisma migrate deploy && node src/index.js'"
 healthcheckPath = "/health"
 healthcheckTimeout = 60
-numReplicas = 1
