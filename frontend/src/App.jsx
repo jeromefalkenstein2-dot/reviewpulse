@@ -30,7 +30,7 @@ export default function App() {
   const config = getAppBridgeConfig();
 
   // Dev mode or no host param: skip App Bridge
-  const skipBridge = !config.host || import.meta.env.DEV;
+  const skipBridge = import.meta.env.DEV === true;
 
   const inner = (
     <BrowserRouter>
