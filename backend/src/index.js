@@ -95,4 +95,4 @@ process.on('SIGTERM', async () => {
   await prisma.$disconnect();
   process.exit(0);
 });
-app.get('/', (req, res) => { const shop = req.query.shop; if (shop) { res.redirect('/auth/begin?shop=' + shop); } else { res.json({ status: 'ok' }); } });
+app.get('/', (req, res) => { const { shop, host } = req.query; if (host) { return res.redirect(process.env.FRONTEND_URL + '?shop=' + shop + '&host=' + host); } if (shop) { return res.redirect('/auth/begin?shop=' + shop); } res.json({ status: 'ok' }); });
