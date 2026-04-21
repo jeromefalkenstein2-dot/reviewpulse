@@ -54,7 +54,7 @@ const allowedOrigins = [
   /\.myshopify\.com$/,
 ].filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     const allowed = allowedOrigins.some(o =>
@@ -63,7 +63,9 @@ app.use(cors({
     cb(null, allowed);
   },
   credentials: true,
-}));
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/auth', authRoutes);
