@@ -112,7 +112,7 @@ function StatsGrid({ stats }) {
     },
     {
       label: 'Klickrate',
-      value: `${stats.clickRate}%`,
+      value: stats.emailsSent > 0 ? Math.round((stats.linksClicked / stats.emailsSent) * 100) + "%" : "0%",
       Icon: IconPercent,
       color: '#7c3aed',
       bg: '#f5f3ff',
